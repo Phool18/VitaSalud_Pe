@@ -1,0 +1,27 @@
+<app-page-header
+  title="Sedes"
+  subtitle="Catalogo de sedes de la cadena de clinicas VitaSalud Peru."
+>
+  <a class="primary-button" routerLink="/sedes/new">Nueva sede</a>
+</app-page-header>
+
+@if (sedes$ | async; as sedes) {
+  <app-data-panel title="Listado de sedes" [subtitle]="sedes.length + ' sede(s)'">
+    @if (sedes.length) {
+      <div class="cards">
+        @for (sede of sedes; track sede.id) {
+          <a class="card" [routerLink]="['/sedes', sede.id]">
+            <div>
+              <strong>{{ sede.nombre }}</strong>
+              <small>{{ sede.codigo }}</small>
+            </div>
+            <app-status-badge [value]="sede.estado" />
+            <p>{{ sede.ciudad }} · {{ sede.responsable }}</p>
+          </a>
+        }
+      </div>
+    } @else {
+      <app-empty-state title="No hay sedes registradas" description="Comienza creando la primera sede." />
+    }
+  </app-data-panel>
+}

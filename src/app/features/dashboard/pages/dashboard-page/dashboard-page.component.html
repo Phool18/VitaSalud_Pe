@@ -1,0 +1,86 @@
+<app-page-header
+  title="Dashboard operacional"
+  subtitle="Panorama de tickets, cumplimiento SLA y carga de atencion por sede."
+/>
+
+@if (vm$ | async; as vm) {
+  <section class="kpi-grid">
+    @for (kpi of vm.kpis; track kpi.label) {
+      <article class="kpi-card">
+        <span [style.background]="kpi.accent ?? 'var(--info)'"></span>
+        <div>
+          <small>{{ kpi.label }}</small>
+          <strong>{{ kpi.value }}</strong>
+        </div>
+      </article>
+    }
+  </section>
+
+  <section class="content-grid">
+    <app-data-panel title="Tickets por prioridad" subtitle="Distribucion de urgencia operativa">
+      @if (hasBarData(vm.priorities)) {
+        <div class="bars">
+          @for (item of vm.priorities; track item.label) {
+            <div class="bar-row">
+              <strong>{{ item.label }}</strong>
+              <div class="bar-track">
+                <span [ngStyle]="{ width: width(item.value, vm.kpis[0].value || 1) }"></span>
+              </div>
+              <small>{{ item.value }}</small>
+            </div>
+          }
+        </div>
+      } @else {
+        <app-empty-state
+          title="Sin tickets registrados"
+          description="Cuando ingresen tickets veras aqui la distribucion por prioridad."
+        />
+      }
+    </app-data-panel>
+
+    <app-data-panel title="Tickets por estado" subtitle="Seguimiento del flujo de atencion">
+      <div class="bars compact">
+        @for (item of vm.states; track item.label) {
+          <div class="bar-row">
+            <strong>{{ item.label | enumLabel }}</strong>
+            <div class="bar-track">
+              <span [ngStyle]="{ width: width(item.value, vm.kpis[0].value || 1) }"></span>
+            </div>
+            <small>{{ item.value }}</small>
+          </div>
+        }
+      </div>
+    </app-data-panel>
+
+    <app-data-panel title="Ranking de sedes" subtitle="Sedes con mayor volumen de tickets">
+      <div class="ranking">
+        @for (item of vm.topSedes; track item.label) {
+          <article>
+            <strong>{{ item.label }}</strong>
+            <span>{{ item.value }} tickets</span>
+          </article>
+        }
+      </div>
+    </app-data-panel>
+
+    <app-data-panel title="Visitas programadas hoy" subtitle="Control diario de desplazamientos tecnicos">
+      @if (vm.todayVisits.length) {
+        <div class="ranking">
+          @for (item of vm.todayVisits; track item.label) {
+            <article>
+              <strong>{{ item.label }}</strong>
+              <span>Programada para hoy</span>
+            </article>
+          }
+        </div>
+      } @else {
+        <app-empty-state
+          title="Sin visitas para hoy"
+          description="No hay visitas tecnicas programadas en la fecha actual."
+        />
+      }
+    </app-data-panel>
+  </section>
+} @else {
+  <app-loading-state />
+}

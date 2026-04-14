@@ -1,0 +1,108 @@
+.shell {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 280px minmax(0, 1fr);
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.sidebar {
+  background:
+    radial-gradient(circle at top, rgba(71, 178, 164, 0.16), transparent 32%),
+    linear-gradient(180deg, #0f3c66 0%, #12537c 55%, #134161 100%);
+  border-radius: 1.5rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.brand {
+  align-items: center;
+  display: flex;
+  gap: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.brand span {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  display: inline-flex;
+  font-size: 1.1rem;
+  font-weight: 800;
+  height: 3rem;
+  justify-content: center;
+  width: 3rem;
+}
+
+.brand strong,
+.session-card strong {
+  display: block;
+}
+
+.brand small,
+.session-card small {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+nav {
+  display: grid;
+  gap: 0.55rem;
+}
+
+a {
+  border-radius: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.85rem 1rem;
+  text-decoration: none;
+  transition: 180ms ease;
+}
+
+a:hover,
+a.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.session-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  display: grid;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding: 1rem;
+}
+
+.session-card .secondary-button {
+  background: rgba(255, 255, 255, 0.16);
+  color: white;
+}
+
+.session-card .secondary-button:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.content {
+  min-width: 0;
+  padding: 1rem 0.5rem 2rem 0;
+}
+
+@media (max-width: 1080px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    gap: 1rem;
+  }
+
+  nav {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  }
+
+  .content {
+    padding-right: 0;
+  }
+}

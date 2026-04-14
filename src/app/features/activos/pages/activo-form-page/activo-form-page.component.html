@@ -1,0 +1,89 @@
+@if (vm$ | async; as vm) {
+  <app-page-header [title]="vm.title" [subtitle]="vm.subtitle">
+    <a class="ghost-button" routerLink="/activos">Volver al listado</a>
+  </app-page-header>
+
+  <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="grid">
+      <label>
+        <span>Sede</span>
+        <select formControlName="sedeId">
+          <option value="">Selecciona una sede</option>
+          @for (sede of vm.sedes; track sede.id) {
+            <option [value]="sede.id">{{ sede.nombre }}</option>
+          }
+        </select>
+        <app-form-error [message]="error('sedeId')" />
+      </label>
+      <label>
+        <span>Nombre</span>
+        <input type="text" formControlName="nombre" />
+        <app-form-error [message]="error('nombre')" />
+      </label>
+      <label>
+        <span>Tipo</span>
+        <select formControlName="tipo">
+          <option value="">Selecciona un tipo</option>
+          @for (tipo of tipos; track tipo) {
+            <option [value]="tipo">{{ tipo | enumLabel }}</option>
+          }
+        </select>
+        <app-form-error [message]="error('tipo')" />
+      </label>
+      <label>
+        <span>Marca</span>
+        <input type="text" formControlName="marca" />
+        <app-form-error [message]="error('marca')" />
+      </label>
+      <label>
+        <span>Modelo</span>
+        <input type="text" formControlName="modelo" />
+        <app-form-error [message]="error('modelo')" />
+      </label>
+      <label>
+        <span>Numero de serie</span>
+        <input type="text" formControlName="numeroSerie" />
+        <app-form-error [message]="error('numeroSerie')" />
+      </label>
+      <label>
+        <span>Criticidad</span>
+        <select formControlName="criticidad">
+          <option value="">Selecciona una criticidad</option>
+          @for (criticidad of criticidades; track criticidad) {
+            <option [value]="criticidad">{{ criticidad | enumLabel }}</option>
+          }
+        </select>
+        <app-form-error [message]="error('criticidad')" />
+      </label>
+      <label>
+        <span>Estado</span>
+        <select formControlName="estado">
+          <option value="">Selecciona un estado</option>
+          @for (estado of estados; track estado) {
+            <option [value]="estado">{{ estado | enumLabel }}</option>
+          }
+        </select>
+        <app-form-error [message]="error('estado')" />
+      </label>
+      <label>
+        <span>Fecha de registro</span>
+        <input type="date" formControlName="fechaRegistro" />
+        <app-form-error [message]="error('fechaRegistro')" />
+      </label>
+      <label class="checkbox">
+        <input type="checkbox" formControlName="activo" />
+        <span>Activo habilitado</span>
+      </label>
+    </div>
+
+    @if (pageError()) {
+      <p class="server-error">{{ pageError() }}</p>
+    }
+
+    <div class="actions">
+      <button type="submit" [disabled]="saving()">
+        {{ saving() ? 'Guardando...' : vm.submitLabel }}
+      </button>
+    </div>
+  </form>
+}

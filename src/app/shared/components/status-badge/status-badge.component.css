@@ -1,0 +1,33 @@
+.badge {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.35rem 0.75rem;
+}
+
+.danger {
+  background: rgba(180, 42, 42, 0.14);
+  color: #9b1d20;
+}
+
+.warning {
+  background: rgba(207, 115, 16, 0.14);
+  color: #995712;
+}
+
+.success {
+  background: rgba(24, 125, 78, 0.14);
+  color: #166342;
+}
+
+.info {
+  background: rgba(22, 96, 160, 0.14);
+  color: #165d99;
+}
+
+.neutral {
+  background: rgba(83, 99, 123, 0.14);
+  color: #4e5c72;
+}

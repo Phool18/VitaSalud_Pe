@@ -1,0 +1,113 @@
+.login-page {
+  align-items: center;
+  background:
+    radial-gradient(circle at top left, rgba(62, 173, 158, 0.16), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(19, 85, 132, 0.16), transparent 38%),
+    linear-gradient(160deg, #eef7fb 0%, #f7fbfd 42%, #f1f6f8 100%);
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 1.1fr) minmax(340px, 440px);
+  min-height: 100vh;
+  padding: clamp(1.5rem, 4vw, 4rem);
+}
+
+.intro {
+  max-width: 40rem;
+}
+
+.eyebrow {
+  color: var(--brand);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+h1 {
+  color: var(--ink-900);
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  line-height: 0.95;
+  margin: 0;
+}
+
+.intro > p {
+  color: var(--ink-500);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-top: 1rem;
+}
+
+.sample-users,
+.login-card {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(19, 85, 132, 0.08);
+  border-radius: 1.5rem;
+  box-shadow: 0 24px 60px rgba(12, 32, 54, 0.1);
+}
+
+.sample-users {
+  margin-top: 2rem;
+  padding: 1.4rem;
+}
+
+.sample-users h2,
+.login-card h2 {
+  color: var(--ink-900);
+  margin: 0;
+}
+
+.sample-users ul {
+  color: var(--ink-600);
+  margin: 1rem 0;
+  padding-left: 1.1rem;
+}
+
+.password {
+  color: var(--ink-500);
+  margin: 0;
+}
+
+.login-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.8rem;
+}
+
+.login-card p {
+  color: var(--ink-500);
+  margin: 0.35rem 0 0;
+}
+
+label {
+  color: var(--ink-700);
+  display: block;
+  font-weight: 600;
+}
+
+label span {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+input {
+  width: 100%;
+}
+
+.server-error {
+  background: rgba(180, 42, 42, 0.08);
+  border: 1px solid rgba(180, 42, 42, 0.18);
+  border-radius: 0.85rem;
+  color: var(--danger);
+  padding: 0.85rem 1rem;
+}
+
+button {
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 920px) {
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+}

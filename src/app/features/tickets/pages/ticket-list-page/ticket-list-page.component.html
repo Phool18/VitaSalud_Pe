@@ -1,0 +1,129 @@
+<app-page-header
+  title="Tickets de soporte"
+  subtitle="Listado principal con filtros sincronizados en la URL para seguimiento operativo."
+>
+  @if (vm$ | async; as vm) {
+    @if (vm.canCreate) {
+      <a class="primary-button" routerLink="/tickets/new">Nuevo ticket</a>
+    }
+  }
+</app-page-header>
+
+<app-data-panel title="Filtros" subtitle="Busqueda, prioridad, estado, sede y tecnico">
+  <form class="filters-grid" [formGroup]="filtersForm">
+    <label>
+      <span>Buscar</span>
+      <input type="search" formControlName="search" placeholder="Codigo, titulo o reportante" />
+    </label>
+
+    <label>
+      <span>Estado</span>
+      <select formControlName="estado">
+        <option value="">Todos</option>
+        @for (estado of estados; track estado) {
+          <option [value]="estado">{{ formatLabel(estado) }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      <span>Prioridad</span>
+      <select formControlName="prioridad">
+        <option value="">Todas</option>
+        @for (prioridad of prioridades; track prioridad) {
+          <option [value]="prioridad">{{ formatLabel(prioridad) }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      <span>Categoria</span>
+      <select formControlName="categoria">
+        <option value="">Todas</option>
+        @for (categoria of categorias; track categoria) {
+          <option [value]="categoria">{{ formatLabel(categoria) }}</option>
+        }
+      </select>
+    </label>
+
+    @if (vm$ | async; as vm) {
+      @if (vm.isPrivileged) {
+        <label>
+          <span>Sede</span>
+          <select formControlName="sedeId">
+            <option value="">Todas</option>
+            @for (sede of vm.sedes; track sede.id) {
+              <option [value]="sede.id">{{ sede.nombre }}</option>
+            }
+          </select>
+        </label>
+      }
+
+      <label>
+        <span>Tecnico</span>
+        <select formControlName="tecnicoId">
+          <option value="">Todos</option>
+          @for (tecnico of vm.tecnicos; track tecnico.id) {
+            <option [value]="tecnico.id">{{ tecnico.nombreCompleto }}</option>
+          }
+        </select>
+      </label>
+    }
+  </form>
+
+  <button panel-actions type="button" class="ghost-button" (click)="clearFilters()">Limpiar</button>
+</app-data-panel>
+
+@if (vm$ | async; as vm) {
+  <app-data-panel title="Resultados" [subtitle]="vm.tickets.length + ' ticket(s) encontrados'">
+    @if (vm.tickets.length) {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Codigo</th>
+              <th>Titulo</th>
+              <th>Sede</th>
+              <th>Categoria</th>
+              <th>Prioridad</th>
+              <th>Estado</th>
+              <th>Tecnico</th>
+              <th>Registro</th>
+              <th>SLA</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ticket of vm.tickets; track ticket.id) {
+              <tr>
+                <td>{{ ticket.codigo }}</td>
+                <td>
+                  <strong>{{ ticket.titulo }}</strong>
+                </td>
+                <td>{{ ticket.sede }}</td>
+                <td>{{ ticket.categoria | enumLabel }}</td>
+                <td><app-status-badge [value]="ticket.prioridad" /></td>
+                <td><app-status-badge [value]="ticket.estado" /></td>
+                <td>{{ ticket.tecnico }}</td>
+                <td>{{ ticket.fechaRegistro | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td>
+                  <span [class.overdue]="ticket.slaVencido">
+                    {{ ticket.fechaLimiteAtencion | date: 'dd/MM/yyyy HH:mm' }}
+                  </span>
+                </td>
+                <td>
+                  <a class="table-link" [routerLink]="['/tickets', ticket.id]">Ver detalle</a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty-state
+        title="No hay tickets para los filtros aplicados"
+        description="Prueba ajustando la busqueda o crea un nuevo ticket si tu rol lo permite."
+      />
+    }
+  </app-data-panel>
+}

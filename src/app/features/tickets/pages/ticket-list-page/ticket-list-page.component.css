@@ -1,0 +1,60 @@
+:host {
+  display: block;
+}
+
+app-data-panel {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.filters-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.filters-grid label span {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border-bottom: 1px solid rgba(19, 85, 132, 0.08);
+  padding: 0.85rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: var(--ink-500);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+td strong {
+  color: var(--ink-800);
+}
+
+.overdue {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.table-link {
+  color: var(--brand);
+  font-weight: 700;
+  text-decoration: none;
+}

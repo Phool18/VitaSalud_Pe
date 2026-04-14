@@ -1,0 +1,81 @@
+<app-page-header
+  title="Visitas tecnicas"
+  subtitle="Programacion y seguimiento de atenciones en sitio."
+>
+  @if (vm$ | async; as vm) {
+    @if (vm.canCreate) {
+      <a class="primary-button" routerLink="/visitas/new">Nueva visita</a>
+    }
+  }
+</app-page-header>
+
+<app-data-panel title="Filtros" subtitle="Busqueda por codigo, estado y tecnico">
+  <form class="filters-grid" [formGroup]="filtersForm">
+    <label>
+      <span>Buscar</span>
+      <input type="search" formControlName="search" placeholder="Codigo de visita, ticket o tecnico" />
+    </label>
+    <label>
+      <span>Estado</span>
+      <select formControlName="estado">
+        <option value="">Todos</option>
+        @for (estado of estados; track estado) {
+          <option [value]="estado">{{ estado | enumLabel }}</option>
+        }
+      </select>
+    </label>
+    @if (vm$ | async; as vm) {
+      @if (vm.isPrivileged) {
+        <label>
+          <span>Tecnico</span>
+          <select formControlName="tecnicoId">
+            <option value="">Todos</option>
+            @for (tecnico of vm.tecnicos; track tecnico.id) {
+              <option [value]="tecnico.id">{{ tecnico.nombreCompleto }}</option>
+            }
+          </select>
+        </label>
+      }
+    }
+  </form>
+
+  <button panel-actions type="button" class="ghost-button" (click)="clearFilters()">Limpiar</button>
+</app-data-panel>
+
+@if (vm$ | async; as vm) {
+  <app-data-panel title="Listado de visitas" [subtitle]="vm.visitas.length + ' visita(s)'">
+    @if (vm.visitas.length) {
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Codigo</th>
+              <th>Ticket</th>
+              <th>Tecnico</th>
+              <th>Programada</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (visita of vm.visitas; track visita.id) {
+              <tr>
+                <td>{{ visita.codigo }}</td>
+                <td>{{ visita.ticketCodigo }}</td>
+                <td>{{ visita.tecnicoNombre }}</td>
+                <td>{{ visita.fechaProgramada | date: 'dd/MM/yyyy' }}</td>
+                <td><app-status-badge [value]="visita.estado" /></td>
+                <td><a class="table-link" [routerLink]="['/visitas', visita.id]">Ver detalle</a></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty-state
+        title="No hay visitas para los filtros aplicados"
+        description="Prueba otros filtros o crea una nueva visita desde un ticket elegible."
+      />
+    }
+  </app-data-panel>
+}

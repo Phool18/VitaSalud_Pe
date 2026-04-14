@@ -1,0 +1,52 @@
+@if (vm$ | async; as vm) {
+  <app-page-header [title]="vm.title" [subtitle]="vm.subtitle">
+    <a class="ghost-button" routerLink="/visitas">Volver al listado</a>
+  </app-page-header>
+
+  <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="grid">
+      <label>
+        <span>Ticket</span>
+        <select formControlName="ticketId">
+          <option value="">Selecciona un ticket</option>
+          @for (ticket of vm.tickets; track ticket.id) {
+            <option [value]="ticket.id">{{ ticket.codigo }} - {{ ticket.titulo }}</option>
+          }
+        </select>
+        <app-form-error [message]="error('ticketId')" />
+      </label>
+
+      <label>
+        <span>Tecnico</span>
+        <select formControlName="tecnicoId">
+          <option value="">Selecciona un tecnico</option>
+          @for (tecnico of vm.tecnicos; track tecnico.id) {
+            <option [value]="tecnico.id">{{ tecnico.nombreCompleto }}</option>
+          }
+        </select>
+        <app-form-error [message]="error('tecnicoId')" />
+      </label>
+
+      <label>
+        <span>Fecha programada</span>
+        <input type="date" formControlName="fechaProgramada" />
+        <app-form-error [message]="error('fechaProgramada')" />
+      </label>
+    </div>
+
+    <label>
+      <span>Observacion</span>
+      <textarea rows="4" formControlName="observacion" placeholder="Contexto logistico u observaciones"></textarea>
+    </label>
+
+    @if (pageError()) {
+      <p class="server-error">{{ pageError() }}</p>
+    }
+
+    <div class="actions">
+      <button type="submit" [disabled]="saving()">
+        {{ saving() ? 'Guardando...' : vm.submitLabel }}
+      </button>
+    </div>
+  </form>
+}

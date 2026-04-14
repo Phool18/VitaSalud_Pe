@@ -1,0 +1,81 @@
+@if (vm$ | async; as vm) {
+  <app-page-header [title]="vm.title" [subtitle]="vm.subtitle">
+    <a class="ghost-button" routerLink="/tickets">Volver al listado</a>
+  </app-page-header>
+
+  <form class="form-card" [formGroup]="form" (ngSubmit)="submit(vm.session)">
+    <div class="grid two-columns">
+      <label>
+        <span>Sede</span>
+        <select formControlName="sedeId">
+          <option value="">Selecciona una sede</option>
+          @for (sede of vm.sedes; track sede.id) {
+            <option [value]="sede.id">{{ sede.nombre }} - {{ sede.ciudad }}</option>
+          }
+        </select>
+        <app-form-error [message]="error('sedeId')" />
+      </label>
+
+      <label>
+        <span>Activo TI asociado</span>
+        <select formControlName="activoId">
+          <option value="">Sin activo asociado</option>
+          @for (activo of filteredActivos(vm.activos); track activo.id) {
+            <option [value]="activo.id">
+              {{ activo.codigoPatrimonial }} - {{ activo.nombre }} ({{ activo.estado | enumLabel }})
+            </option>
+          }
+        </select>
+      </label>
+
+      <label>
+        <span>Categoria</span>
+        <select formControlName="categoria">
+          <option value="">Selecciona una categoria</option>
+          @for (categoria of categorias; track categoria) {
+            <option [value]="categoria">{{ categoria | enumLabel }}</option>
+          }
+        </select>
+        <app-form-error [message]="error('categoria')" />
+      </label>
+
+      <label>
+        <span>Prioridad</span>
+        <select formControlName="prioridad">
+          <option value="">Selecciona una prioridad</option>
+          @for (prioridad of prioridades; track prioridad) {
+            <option [value]="prioridad">{{ prioridad | enumLabel }}</option>
+          }
+        </select>
+        <app-form-error [message]="error('prioridad')" />
+      </label>
+    </div>
+
+    <label>
+      <span>Titulo</span>
+      <input type="text" formControlName="titulo" maxlength="120" placeholder="Describe la incidencia" />
+      <app-form-error [message]="error('titulo')" />
+    </label>
+
+    <label>
+      <span>Descripcion</span>
+      <textarea
+        rows="6"
+        formControlName="descripcion"
+        maxlength="1200"
+        placeholder="Detalla el problema, impacto y contexto del caso"
+      ></textarea>
+      <app-form-error [message]="error('descripcion')" />
+    </label>
+
+    @if (pageError()) {
+      <p class="server-error">{{ pageError() }}</p>
+    }
+
+    <div class="actions">
+      <button type="submit" [disabled]="saving()">
+        {{ saving() ? 'Guardando...' : vm.submitLabel }}
+      </button>
+    </div>
+  </form>
+}

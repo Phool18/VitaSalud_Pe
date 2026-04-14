@@ -1,0 +1,198 @@
+@if (vm$ | async; as vm) {
+  @if (vm.state === 'loading') {
+    <app-loading-state label="Cargando detalle del ticket..." />
+  } @else if (vm.state === 'ready') {
+    @if (vm.ticket; as ticket) {
+      <app-page-header [title]="ticket.codigo" [subtitle]="ticket.titulo">
+        <a class="ghost-button" routerLink="/tickets">Volver</a>
+        @if (vm.canEdit) {
+          <a class="secondary-button" [routerLink]="['/tickets', ticket.id, 'edit']">Editar</a>
+        }
+        @if (vm.canCreateVisit) {
+          <a class="primary-button" [routerLink]="['/visitas/new']" [queryParams]="{ ticketId: ticket.id }">
+            Crear visita
+          </a>
+        }
+      </app-page-header>
+
+      <section class="detail-grid">
+        <app-data-panel title="Resumen del ticket" subtitle="Datos principales del caso">
+          <div class="summary-grid">
+            <article>
+              <span>Estado</span>
+              <app-status-badge [value]="ticket.estado" />
+            </article>
+            <article>
+              <span>Prioridad</span>
+              <app-status-badge [value]="ticket.prioridad" />
+            </article>
+            <article>
+              <span>Categoria</span>
+              <strong>{{ ticket.categoria | enumLabel }}</strong>
+            </article>
+            <article>
+              <span>Sede</span>
+              <strong>{{ vm.sede?.nombre ?? 'Sin sede' }}</strong>
+            </article>
+            <article>
+              <span>Reportado por</span>
+              <strong>{{ ticket.reportadoPor }}</strong>
+            </article>
+            <article>
+              <span>Tecnico asignado</span>
+              <strong>{{ vm.tecnico?.nombreCompleto ?? 'Sin asignar' }}</strong>
+            </article>
+            <article>
+              <span>Activo asociado</span>
+              <strong>
+                {{ vm.activo ? (vm.activo.codigoPatrimonial + ' - ' + vm.activo.nombre) : 'Sin activo asociado' }}
+              </strong>
+            </article>
+            <article>
+              <span>Registro</span>
+              <strong>{{ ticket.fechaRegistro | date: 'dd/MM/yyyy HH:mm' }}</strong>
+            </article>
+            <article>
+              <span>Limite SLA</span>
+              <strong>{{ ticket.fechaLimiteAtencion | date: 'dd/MM/yyyy HH:mm' }}</strong>
+            </article>
+          </div>
+
+          <div class="narrative">
+            <h3>Descripcion</h3>
+            <p>{{ ticket.descripcion }}</p>
+          </div>
+
+          @if (ticket.solucionResumen) {
+            <div class="narrative">
+              <h3>Solucion registrada</h3>
+              <p>{{ ticket.solucionResumen }}</p>
+            </div>
+          }
+        </app-data-panel>
+
+        <app-data-panel title="Acciones del flujo" subtitle="Transiciones segun reglas de negocio">
+          <div class="action-stack">
+            @if (vm.canReview) {
+              <button type="button" (click)="moveToReview(ticket.id)" [disabled]="actionLoading('review')">
+                {{ actionLoading('review') ? 'Procesando...' : 'Pasar a revision' }}
+              </button>
+            }
+
+            @if (vm.canAssign) {
+              <form class="inline-form" [formGroup]="assignForm" (ngSubmit)="assign(ticket.id)">
+                <select formControlName="tecnicoId">
+                  <option value="">Selecciona tecnico</option>
+                  @for (tecnico of vm.tecnicos; track tecnico.id) {
+                    <option [value]="tecnico.id">{{ tecnico.nombreCompleto }}</option>
+                  }
+                </select>
+                <button type="submit" [disabled]="actionLoading('assign')">
+                  {{ actionLoading('assign') ? 'Asignando...' : 'Asignar ticket' }}
+                </button>
+                <app-form-error [message]="assignError()" />
+              </form>
+            }
+
+            @if (vm.canResolve) {
+              <form class="stack-form" [formGroup]="resolveForm" (ngSubmit)="resolve(ticket.id)">
+                <textarea rows="4" formControlName="solucion" placeholder="Resumen de la solucion aplicada"></textarea>
+                <app-form-error [message]="resolveError()" />
+                <button type="submit" [disabled]="actionLoading('resolve')">
+                  {{ actionLoading('resolve') ? 'Resolviendo...' : 'Resolver ticket' }}
+                </button>
+              </form>
+            }
+
+            @if (vm.canClose) {
+              <button type="button" class="secondary-button" (click)="closeTicket(ticket.id)"
+                [disabled]="actionLoading('close')">
+                {{ actionLoading('close') ? 'Cerrando...' : 'Cerrar ticket' }}
+              </button>
+            }
+
+            @if (vm.canCancel) {
+              <button type="button" class="ghost-button" (click)="cancelTicket(ticket.id)"
+                [disabled]="actionLoading('cancel')">
+                {{ actionLoading('cancel') ? 'Cancelando...' : 'Cancelar ticket' }}
+              </button>
+            }
+
+            @if (actionError()) {
+              <p class="feedback error">{{ actionError() }}</p>
+            }
+
+            @if (actionSuccess()) {
+              <p class="feedback success">{{ actionSuccess() }}</p>
+            }
+          </div>
+        </app-data-panel>
+      </section>
+
+      <section class="detail-grid">
+        <app-data-panel title="Visitas tecnicas" [subtitle]="vm.visitas.length + ' registrada(s)'">
+          @if (vm.visitas.length) {
+            <div class="timeline">
+              @for (visita of vm.visitas; track visita.id) {
+                <a class="timeline-item" [routerLink]="['/visitas', visita.id]">
+                  <strong>{{ visita.codigo }}</strong>
+                  <app-status-badge [value]="visita.estado" />
+                  <span>{{ visita.fechaProgramada | date: 'dd/MM/yyyy' }}</span>
+                </a>
+              }
+            </div>
+          } @else {
+            <app-empty-state
+              title="Aun no hay visitas"
+              description="Puedes crear una visita desde este ticket si el estado lo permite."
+            />
+          }
+        </app-data-panel>
+
+        <app-data-panel title="Comentarios" [subtitle]="vm.comentarios.length + ' comentario(s)'">
+          @if (vm.comentarios.length) {
+            <div class="comments">
+              @for (comentario of vm.comentarios; track comentario.id) {
+                <article>
+                  <header>
+                    <strong>{{ comentario.autorNombre }}</strong>
+                    <span>{{ comentario.autorRol | enumLabel }}</span>
+                    <small>{{ comentario.fecha | date: 'dd/MM/yyyy HH:mm' }}</small>
+                  </header>
+                  <p>{{ comentario.mensaje }}</p>
+                </article>
+              }
+            </div>
+          } @else {
+            <app-empty-state
+              title="Sin comentarios"
+              description="Agrega un comentario para registrar seguimiento del caso."
+            />
+          }
+
+          <form class="stack-form comment-form" [formGroup]="commentForm" (ngSubmit)="addComment(ticket.id)">
+            <textarea rows="4" formControlName="mensaje" placeholder="Escribe un comentario de seguimiento"></textarea>
+            <app-form-error [message]="commentError()" />
+            <button type="submit" [disabled]="actionLoading('comment')">
+              {{ actionLoading('comment') ? 'Guardando...' : 'Agregar comentario' }}
+            </button>
+          </form>
+        </app-data-panel>
+      </section>
+    } @else {
+      <app-empty-state
+        title="Ticket no disponible"
+        description="No se encontro informacion valida para este ticket."
+      >
+        <a class="ghost-button" routerLink="/tickets">Volver al listado</a>
+      </app-empty-state>
+    }
+  } @else {
+    <app-empty-state
+      title="Ticket no disponible"
+        [description]="vm.message ?? 'No se encontro el ticket o tu rol no tiene acceso a este caso.'"
+    >
+      <a class="ghost-button" routerLink="/tickets">Volver al listado</a>
+    </app-empty-state>
+  }
+}

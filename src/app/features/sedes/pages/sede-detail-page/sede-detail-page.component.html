@@ -1,0 +1,27 @@
+@if (sede$ | async; as sede) {
+  <app-page-header [title]="sede.codigo" [subtitle]="sede.nombre">
+    <a class="ghost-button" routerLink="/sedes">Volver</a>
+    <a class="secondary-button" [routerLink]="['/sedes', sede.id, 'edit']">Editar</a>
+  </app-page-header>
+
+  <app-data-panel title="Detalle de sede" subtitle="Informacion general y responsable operativo">
+    <div class="summary-grid">
+      <article>
+        <span>Ciudad</span>
+        <strong>{{ sede.ciudad }}</strong>
+      </article>
+      <article>
+        <span>Direccion</span>
+        <strong>{{ sede.direccion }}</strong>
+      </article>
+      <article>
+        <span>Responsable</span>
+        <strong>{{ sede.responsable }}</strong>
+      </article>
+      <article>
+        <span>Estado</span>
+        <app-status-badge [value]="sede.estado" />
+      </article>
+    </div>
+  </app-data-panel>
+}

@@ -1,0 +1,13 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">VitaSalud Peru</p>
+    <h1>{{ title() }}</h1>
+    @if (subtitle()) {
+      <p>{{ subtitle() }}</p>
+    }
+  </div>
+
+  <div class="actions">
+    <ng-content />
+  </div>
+</header>

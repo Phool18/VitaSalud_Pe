@@ -1,0 +1,50 @@
+@if (vm$ | async; as vm) {
+  <app-page-header [title]="vm.title" [subtitle]="vm.subtitle">
+    <a class="ghost-button" routerLink="/sedes">Volver al listado</a>
+  </app-page-header>
+
+  <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="grid">
+      <label>
+        <span>Nombre</span>
+        <input type="text" formControlName="nombre" />
+        <app-form-error [message]="error('nombre')" />
+      </label>
+      <label>
+        <span>Ciudad</span>
+        <input type="text" formControlName="ciudad" />
+        <app-form-error [message]="error('ciudad')" />
+      </label>
+      <label>
+        <span>Direccion</span>
+        <input type="text" formControlName="direccion" />
+        <app-form-error [message]="error('direccion')" />
+      </label>
+      <label>
+        <span>Responsable</span>
+        <input type="text" formControlName="responsable" />
+        <app-form-error [message]="error('responsable')" />
+      </label>
+      <label>
+        <span>Estado</span>
+        <select formControlName="estado">
+          <option value="">Selecciona un estado</option>
+          @for (estado of estados; track estado) {
+            <option [value]="estado">{{ estado | enumLabel }}</option>
+          }
+        </select>
+        <app-form-error [message]="error('estado')" />
+      </label>
+    </div>
+
+    @if (pageError()) {
+      <p class="server-error">{{ pageError() }}</p>
+    }
+
+    <div class="actions">
+      <button type="submit" [disabled]="saving()">
+        {{ saving() ? 'Guardando...' : vm.submitLabel }}
+      </button>
+    </div>
+  </form>
+}

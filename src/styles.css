@@ -1,0 +1,114 @@
+:root {
+  --brand: #135584;
+  --teal: #2ba89a;
+  --ink-900: #16212d;
+  --ink-800: #25384b;
+  --ink-700: #3b4e61;
+  --ink-600: #53647b;
+  --ink-500: #6f7d92;
+  --surface: #f3f8fb;
+  --surface-2: #edf5f8;
+  --line: rgba(19, 85, 132, 0.12);
+  --danger: #a4282a;
+  --warning: #a76010;
+  --success: #187d4e;
+  --info: #1c76c0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(43, 168, 154, 0.1), transparent 30%),
+    linear-gradient(180deg, #eef5f9 0%, #f7fafc 100%);
+  color: var(--ink-800);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+button,
+.primary-button,
+.secondary-button,
+.ghost-button {
+  appearance: none;
+  border: 0;
+  border-radius: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: 700;
+  justify-content: center;
+  padding: 0.85rem 1.15rem;
+  text-decoration: none;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+button:hover,
+.primary-button:hover,
+.secondary-button:hover,
+.ghost-button:hover {
+  transform: translateY(-1px);
+}
+
+button:disabled,
+.primary-button:disabled,
+.secondary-button:disabled,
+.ghost-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.68;
+  transform: none;
+}
+
+button,
+.primary-button {
+  background: linear-gradient(90deg, var(--brand) 0%, #1a6aa2 100%);
+  box-shadow: 0 14px 30px rgba(19, 85, 132, 0.18);
+  color: white;
+}
+
+.secondary-button {
+  background: rgba(19, 85, 132, 0.08);
+  color: var(--brand);
+}
+
+.ghost-button {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-700);
+}
+
+input,
+select,
+textarea {
+  background: white;
+  border: 1px solid rgba(19, 85, 132, 0.16);
+  border-radius: 0.95rem;
+  color: var(--ink-800);
+  font: inherit;
+  outline: none;
+  padding: 0.85rem 0.95rem;
+  width: 100%;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(43, 168, 154, 0.65);
+  box-shadow: 0 0 0 4px rgba(43, 168, 154, 0.14);
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+a {
+  color: inherit;
+}

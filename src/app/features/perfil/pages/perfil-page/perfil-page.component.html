@@ -1,0 +1,27 @@
+<app-page-header
+  title="Perfil y sesion"
+  subtitle="Resumen del usuario autenticado y su alcance operativo."
+/>
+
+@if (vm$ | async; as vm) {
+  <app-data-panel title="Sesion actual" subtitle="Datos almacenados en la sesion local">
+    <div class="summary-grid">
+      <article>
+        <span>Nombre</span>
+        <strong>{{ vm.session?.nombreCompleto }}</strong>
+      </article>
+      <article>
+        <span>Correo</span>
+        <strong>{{ vm.session?.email }}</strong>
+      </article>
+      <article>
+        <span>Rol</span>
+        <strong>{{ vm.session?.rol | enumLabel }}</strong>
+      </article>
+      <article>
+        <span>Sede asociada</span>
+        <strong>{{ vm.sede?.nombre ?? 'No aplica' }}</strong>
+      </article>
+    </div>
+  </app-data-panel>
+}

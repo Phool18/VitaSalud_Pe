@@ -1,0 +1,31 @@
+.empty-state {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px dashed rgba(19, 85, 132, 0.2);
+  border-radius: 1.25rem;
+  color: var(--ink-500);
+  padding: 2rem;
+  text-align: center;
+}
+
+.icon {
+  align-items: center;
+  background: rgba(19, 85, 132, 0.08);
+  border-radius: 50%;
+  color: var(--brand);
+  display: inline-flex;
+  font-weight: 700;
+  height: 2rem;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  width: 2rem;
+}
+
+h3 {
+  color: var(--ink-900);
+  margin: 0;
+}
+
+p {
+  margin: 0.5rem auto 0;
+  max-width: 30rem;
+}

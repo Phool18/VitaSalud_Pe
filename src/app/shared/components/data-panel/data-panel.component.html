@@ -1,0 +1,16 @@
+<section class="data-panel">
+  <header>
+    <div>
+      <h2>{{ title() }}</h2>
+      @if (subtitle()) {
+        <p>{{ subtitle() }}</p>
+      }
+    </div>
+    <div class="actions">
+      <ng-content select="[panel-actions]" />
+    </div>
+  </header>
+  <div class="content">
+    <ng-content />
+  </div>
+</section>

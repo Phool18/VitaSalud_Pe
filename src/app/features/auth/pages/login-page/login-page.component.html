@@ -1,0 +1,49 @@
+<section class="login-page">
+  <div class="intro">
+    <p class="eyebrow">Mesa de Ayuda TI</p>
+    <h1>VitaSalud Peru</h1>
+    <p>
+      Gestiona tickets, visitas tecnicas y seguimiento de SLA para todas las sedes de la red
+      clinica.
+    </p>
+
+    <div class="sample-users">
+      <h2>Usuarios de prueba</h2>
+      <ul>
+        <li><strong>Admin:</strong> admin@vitasalud.pe</li>
+        <li><strong>Soporte:</strong> soporte1@vitasalud.pe</li>
+        <li><strong>Tecnico:</strong> tecnico1@vitasalud.pe</li>
+        <li><strong>Sede:</strong> sede.lima@vitasalud.pe</li>
+      </ul>
+      <p class="password">Clave comun: <strong>Admin123*</strong></p>
+    </div>
+  </div>
+
+  <form class="login-card" [formGroup]="form" (ngSubmit)="submit()">
+    <div>
+      <p class="eyebrow">Ingreso</p>
+      <h2>Inicia sesion</h2>
+      <p>Accede con tu cuenta de la operacion TI.</p>
+    </div>
+
+    <label>
+      <span>Correo</span>
+      <input type="email" formControlName="email" placeholder="usuario@vitasalud.pe" />
+      <app-form-error [message]="controlMessage('email')" />
+    </label>
+
+    <label>
+      <span>Contrasena</span>
+      <input type="password" formControlName="password" placeholder="Ingresa tu clave" />
+      <app-form-error [message]="controlMessage('password')" />
+    </label>
+
+    @if (errorMessage()) {
+      <p class="server-error">{{ errorMessage() }}</p>
+    }
+
+    <button type="submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Validando...' : 'Entrar al sistema' }}
+    </button>
+  </form>
+</section>

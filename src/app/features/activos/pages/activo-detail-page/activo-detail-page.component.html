@@ -1,0 +1,54 @@
+@if (vm$ | async; as vm) {
+  @if (vm) {
+    <app-page-header [title]="vm.activo.codigoPatrimonial" [subtitle]="vm.activo.nombre">
+      <a class="ghost-button" routerLink="/activos">Volver</a>
+      @if (vm.canEdit) {
+        <a class="secondary-button" [routerLink]="['/activos', vm.activo.id, 'edit']">Editar</a>
+      }
+    </app-page-header>
+
+    <app-data-panel title="Detalle del activo" subtitle="Informacion patrimonial y operativa">
+      <div class="summary-grid">
+        <article>
+          <span>Sede</span>
+          <strong>{{ vm.sede?.nombre ?? 'Sin sede' }}</strong>
+        </article>
+        <article>
+          <span>Tipo</span>
+          <strong>{{ vm.activo.tipo | enumLabel }}</strong>
+        </article>
+        <article>
+          <span>Marca</span>
+          <strong>{{ vm.activo.marca }}</strong>
+        </article>
+        <article>
+          <span>Modelo</span>
+          <strong>{{ vm.activo.modelo }}</strong>
+        </article>
+        <article>
+          <span>Serie</span>
+          <strong>{{ vm.activo.numeroSerie }}</strong>
+        </article>
+        <article>
+          <span>Criticidad</span>
+          <app-status-badge [value]="vm.activo.criticidad" />
+        </article>
+        <article>
+          <span>Estado</span>
+          <app-status-badge [value]="vm.activo.estado" />
+        </article>
+        <article>
+          <span>Registro</span>
+          <strong>{{ vm.activo.fechaRegistro | date: 'dd/MM/yyyy' }}</strong>
+        </article>
+      </div>
+    </app-data-panel>
+  } @else {
+    <app-empty-state
+      title="Activo no disponible"
+      description="No se encontro el activo o tu rol no tiene acceso a este registro."
+    >
+      <a class="ghost-button" routerLink="/activos">Volver al listado</a>
+    </app-empty-state>
+  }
+}

@@ -1,0 +1,91 @@
+@if (vm$ | async; as vm) {
+  @if (vm) {
+    <app-page-header [title]="vm.visita.codigo" subtitle="Detalle operativo de la visita tecnica">
+      <a class="ghost-button" routerLink="/visitas">Volver</a>
+      @if (vm.canEdit) {
+        <a class="secondary-button" [routerLink]="['/visitas', vm.visita.id, 'edit']">Editar</a>
+      }
+    </app-page-header>
+
+    <section class="detail-grid">
+      <app-data-panel title="Resumen" subtitle="Datos de programacion y ejecucion">
+        <div class="summary-grid">
+          <article>
+            <span>Estado</span>
+            <app-status-badge [value]="vm.visita.estado" />
+          </article>
+          <article>
+            <span>Ticket relacionado</span>
+            <strong>{{ vm.ticket?.codigo ?? 'Sin ticket' }}</strong>
+          </article>
+          <article>
+            <span>Tecnico</span>
+            <strong>{{ vm.tecnico?.nombreCompleto ?? 'Sin tecnico' }}</strong>
+          </article>
+          <article>
+            <span>Fecha programada</span>
+            <strong>{{ vm.visita.fechaProgramada | date: 'dd/MM/yyyy' }}</strong>
+          </article>
+          <article>
+            <span>Inicio</span>
+            <strong>{{ vm.visita.fechaInicio ? (vm.visita.fechaInicio | date: 'dd/MM/yyyy HH:mm') : 'Pendiente' }}</strong>
+          </article>
+          <article>
+            <span>Fin</span>
+            <strong>{{ vm.visita.fechaFin ? (vm.visita.fechaFin | date: 'dd/MM/yyyy HH:mm') : 'Pendiente' }}</strong>
+          </article>
+        </div>
+
+        @if (vm.visita.observacion) {
+          <div class="narrative">
+            <h3>Observacion</h3>
+            <p>{{ vm.visita.observacion }}</p>
+          </div>
+        }
+      </app-data-panel>
+
+      <app-data-panel title="Ejecucion" subtitle="Acciones permitidas segun el estado actual">
+        <div class="action-stack">
+          @if (vm.canStart) {
+            <button type="button" (click)="start(vm.visita.id)" [disabled]="actionLoading('start')">
+              {{ actionLoading('start') ? 'Iniciando...' : 'Iniciar visita' }}
+            </button>
+          }
+
+          @if (vm.canFinish) {
+            <form class="stack-form" [formGroup]="finishForm" (ngSubmit)="finish(vm.visita.id)">
+              <textarea rows="3" formControlName="diagnostico" placeholder="Diagnostico realizado"></textarea>
+              <textarea rows="3" formControlName="solucionAplicada" placeholder="Solucion aplicada"></textarea>
+              <app-form-error [message]="finishError()" />
+              <textarea rows="3" formControlName="observacion" placeholder="Observaciones finales"></textarea>
+              <button type="submit" [disabled]="actionLoading('finish')">
+                {{ actionLoading('finish') ? 'Finalizando...' : 'Finalizar visita' }}
+              </button>
+            </form>
+          }
+
+          @if (vm.canCancel) {
+            <button type="button" class="ghost-button" (click)="cancel(vm.visita.id)" [disabled]="actionLoading('cancel')">
+              {{ actionLoading('cancel') ? 'Cancelando...' : 'Cancelar visita' }}
+            </button>
+          }
+
+          @if (actionError()) {
+            <p class="feedback error">{{ actionError() }}</p>
+          }
+
+          @if (actionSuccess()) {
+            <p class="feedback success">{{ actionSuccess() }}</p>
+          }
+        </div>
+      </app-data-panel>
+    </section>
+  } @else {
+    <app-empty-state
+      title="Visita no disponible"
+      description="No se encontro la visita o tu rol no tiene acceso a este registro."
+    >
+      <a class="ghost-button" routerLink="/visitas">Volver al listado</a>
+    </app-empty-state>
+  }
+}
