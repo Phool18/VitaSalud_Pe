@@ -3,50 +3,43 @@
  * Contiene la lógica central de negocio para los tiempos de respuesta de la Mesa de Ayuda.
  */
 
-import { PrioridadTicket } from '../models/ticket-soporte.model';
+import { TicketPrioridad, TicketSoporte } from '../models/ticket-soporte.model';
 
 /**
  * Mapeo estricto de las horas límite de resolución basadas en la prioridad del ticket.
- * @constant
- * @type {Record<PrioridadTicket, number>}
+ * CRITICA: +4h | ALTA: +8h | MEDIA: +24h | BAJA: +48h
  */
-export const SLA_HORAS: Record<PrioridadTicket, number> = {
-  BAJA: 72,
-  MEDIA: 48,
-  ALTA: 24,
-  URGENTE: 4
+export const SLA_HORAS: Record<TicketPrioridad, number> = {
+  CRITICA: 4,
+  ALTA: 8,
+  MEDIA: 24,
+  BAJA: 48
 };
 
 /**
- * Calcula la fecha y hora límite para resolver un ticket, tomando en cuenta
- * EXCLUSIVAMENTE el horario laboral (Lunes a Viernes, de 09:00 a 18:00).
- * * @param {Date | string} fechaCreacion - La marca de tiempo original en la que se reportó la incidencia.
- * @param {number} horasSla - La cantidad de horas objetivo para resolver el ticket (obtenida de SLA_HORAS).
- * @returns {Date} La fecha límite exacta calculada para el cierre del ticket.
- * * @example
- * // Si se crea un viernes a las 17:00 con un SLA de 4 horas (Urgente)
- * // El resultado será el lunes a las 12:00.
- * const limite = calcularFechaLimiteSLA('2026-04-10T17:00:00', 4);
+ * Calcula la fecha límite de atención en tiempo real (sin restricción de horario laboral),
+ * sumando directamente las horas SLA a la fecha de creación.
+ * Esto es coherente con la regla de negocio que habla de horas absolutas (+4h, +8h, etc.).
  */
 export const calcularFechaLimiteSLA = (fechaCreacion: Date | string, horasSla: number): Date => {
   const limite = new Date(fechaCreacion);
-  let horasRestantes = horasSla;
-
-  while (horasRestantes > 0) {
-    limite.setHours(limite.getHours() + 1);
-
-    const diaSemana = limite.getDay();
-    const horaDia = limite.getHours();
-
-    // Verificamos si es un día hábil (Lunes=1 a Viernes=5) 
-    // y si está dentro del horario laboral (09:00 a 18:00)
-    const esDiaHabil = diaSemana !== 0 && diaSemana !== 6;
-    const esHoraLaboral = horaDia > 9 && horaDia <= 18;
-
-    if (esDiaHabil && esHoraLaboral) {
-      horasRestantes--;
-    }
-  }
-
+  limite.setHours(limite.getHours() + horasSla);
   return limite;
 };
+
+/**
+ * Determina si un ticket está vencido (fecha límite superada y no cerrado/cancelado).
+ */
+export function isTicketOverdue(ticket: TicketSoporte): boolean {
+  if (['CERRADO', 'CANCELADO', 'RESUELTO'].includes(ticket.estado)) {
+    return false;
+  }
+  return new Date() > new Date(ticket.fechaLimiteAtencion);
+}
+
+/**
+ * Determina si un ticket está abierto (no cerrado ni cancelado).
+ */
+export function isTicketOpen(ticket: TicketSoporte): boolean {
+  return !['CERRADO', 'CANCELADO'].includes(ticket.estado);
+}

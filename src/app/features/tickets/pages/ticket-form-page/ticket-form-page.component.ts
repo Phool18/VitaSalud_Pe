@@ -63,8 +63,8 @@ export class TicketFormPageComponent {
     activoId: [''],
     categoria: ['', Validators.required],
     prioridad: ['', Validators.required],
-    titulo: ['', [Validators.required, Validators.maxLength(120)]],
-    descripcion: ['', [Validators.required, Validators.maxLength(1200)]]
+    titulo: ['', [Validators.required, Validators.maxLength(120), (c: import('@angular/forms').AbstractControl) => c.value?.trim() ? null : { required: true }]],
+    descripcion: ['', [Validators.required, Validators.maxLength(1200), (c: import('@angular/forms').AbstractControl) => c.value?.trim() ? null : { required: true }]]
   });
 
   /** * ViewModel Reactivo: Combina los datos maestros (Sedes, Activos) 
@@ -153,9 +153,8 @@ export class TicketFormPageComponent {
       descripcion: raw.descripcion
     };
 
-    // TODO: Bug inyectado (Data Loss). 
-    // Fíjate que falta enviar el `activoId`. Al editar, el ticket perderá su activo asignado.
     const updatePayload: TicketUpdatePayload = {
+      activoId: basePayload.activoId,
       categoria: basePayload.categoria,
       prioridad: basePayload.prioridad,
       titulo: basePayload.titulo,

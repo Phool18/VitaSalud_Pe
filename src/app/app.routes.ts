@@ -73,6 +73,8 @@ export const routes: Routes = [
           },
           {
             path: 'new',
+            canActivate: [roleGuard],
+            data: { roles: ['ADMIN', 'SOPORTE', 'TECNICO'] },
             loadComponent: () =>
               import('./features/visitas/pages/visita-form-page/visita-form-page.component').then(
                 (m) => m.VisitaFormPageComponent

@@ -174,9 +174,7 @@ export class TicketDetailPageComponent {
         next: () => {
           this.commentForm.reset({ mensaje: '' });
           this.actionSuccess.set('Comentario agregado.');
-          if (submittedMessage.length > 80) {
-            this.refresh$.next();
-          }
+          this.refresh$.next();
         },
         error: (error: Error) => {
           this.actionError.set(error.message);
@@ -224,7 +222,7 @@ export class TicketDetailPageComponent {
       .subscribe({
         next: () => {
           this.actionSuccess.set(successMessage);
-          if (actionKey !== 'assign') {
+          if (actionKey !== 'comment') {
             this.refresh$.next();
           }
         },
@@ -291,10 +289,10 @@ export class TicketDetailPageComponent {
                   canReview: isPrivilegedUser(session) && canMoveTicketToReview(ticket),
                   canAssign: isPrivilegedUser(session) && canAssignTicket(ticket),
                   canResolve: isPrivilegedUser(session) && canResolveTicket(ticket, visitas),
-                  canClose: isPrivilegedUser(session) && ['ASIGNADO', 'EN_ATENCION', 'RESUELTO'].includes(ticket.estado),
+                  canClose: isPrivilegedUser(session) && canCloseTicket(ticket),
                   canCancel: isPrivilegedUser(session) && canCancelTicket(ticket),
                   canEdit: session?.rol !== 'TECNICO' && canEditTicket(ticket),
-                  canCreateVisit: Boolean(session)
+                  canCreateVisit: Boolean(session) && canCreateVisit(ticket)
                 };
               })
             )

@@ -38,6 +38,12 @@ export class VisitasService {
       allVisitas: this.getAll().pipe(take(1))
     }).pipe(
       switchMap(({ ticket, visitas, allVisitas }) => {
+        if (!canCreateVisit(ticket)) {
+          return throwError(
+            () => new Error('No se puede crear una visita para un ticket cancelado o cerrado.')
+          );
+        }
+
         if (hasActiveVisit(visitas)) {
           return throwError(
             () => new Error('Ya existe una visita activa para este ticket en estado programada o en curso.')

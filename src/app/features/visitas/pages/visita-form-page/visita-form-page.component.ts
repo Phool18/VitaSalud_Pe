@@ -1,5 +1,6 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { combineLatest, map, of, switchMap, take } from 'rxjs';
@@ -22,6 +23,7 @@ export class VisitaFormPageComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly authService = inject(AuthService);
   private readonly ticketsService = inject(TicketsService);
   private readonly usuariosService = inject(UsuariosService);
@@ -105,12 +107,16 @@ export class VisitaFormPageComponent {
       return;
     }
 
+    // FIX: evitar doble submit con saving guard
+    if (this.saving()) return;
+
     this.pageError.set(null);
     this.saving.set(true);
 
     const id = Number(this.route.snapshot.paramMap.get('id') ?? 0);
-    const raw: any = this.form.getRawValue();
+    const raw = this.form.getRawValue();
 
+    // FIX: eliminada la doble suscripción que disparaba la petición dos veces
     const request$ = id
       ? this.visitasService.update(id, {
           tecnicoId: Number(raw.tecnicoId),
@@ -124,14 +130,11 @@ export class VisitaFormPageComponent {
           observacion: raw.observacion || null
         });
 
-    if (!id && this.route.snapshot.queryParamMap.has('ticketId')) {
-      request$.pipe(take(1)).subscribe();
-    }
-
-    request$.pipe(take(1)).subscribe({
+    request$.pipe(take(1), takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (visita) => void this.router.navigate(['/visitas', visita.id]),
       error: (error: Error) => {
-        alert(error.message);
+        this.pageError.set(error.message);
+        this.saving.set(false);
       },
       complete: () => this.saving.set(false)
     });

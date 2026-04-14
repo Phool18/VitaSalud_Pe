@@ -94,8 +94,8 @@ export class TicketListPageComponent {
         canCreate: session?.rol !== 'TECNICO',
         isPrivileged: isPrivilegedUser(session),
         tickets: visibleTickets
-          .filter((ticket) => !search || !estado || ticket.estado === estado)
-          .filter((ticket) => search || !prioridad || ticket.prioridad === prioridad)
+          .filter((ticket) => !estado || ticket.estado === estado)
+          .filter((ticket) => !prioridad || ticket.prioridad === prioridad)
           .filter((ticket) => !categoria || ticket.categoria === categoria)
           .filter((ticket) => !sedeId || ticket.sedeId === sedeId)
           .filter((ticket) => !tecnicoId || ticket.tecnicoAsignadoId === tecnicoId)
@@ -132,7 +132,7 @@ export class TicketListPageComponent {
         {
           search: params.get('search') ?? '',
           estado: params.get('estado') ?? '',
-          prioridad: '',
+          prioridad: params.get('prioridad') ?? '',
           sedeId: params.get('sedeId') ?? '',
           tecnicoId: params.get('tecnicoId') ?? '',
           categoria: params.get('categoria') ?? ''
