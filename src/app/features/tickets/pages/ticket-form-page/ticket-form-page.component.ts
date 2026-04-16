@@ -178,6 +178,12 @@ export class TicketFormPageComponent {
     });
   }
 
+  filteredActivos(activos: import('../../../../core/models/activo-ti.model').ActivoTi[]): import('../../../../core/models/activo-ti.model').ActivoTi[] {
+    const sedeId = Number(this.form.getRawValue().sedeId);
+    if (!sedeId) return [];
+    return activos.filter((a) => a.sedeId === sedeId);
+  }
+
   error(controlName: 'sedeId' | 'categoria' | 'prioridad' | 'titulo' | 'descripcion'): string | null {
     // Lógica de UI de errores omitida por brevedad
     const control = this.form.controls[controlName];
